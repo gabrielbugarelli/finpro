@@ -38,7 +38,7 @@ export class AuthService {
     return { accessToken };
   }
 
-  async signUp(signUpDTO: SignUpDTO) {
+  async signUp(signUpDTO: SignUpDTO): Promise<{ accessToken: string }> {
     const { name, email, password } = signUpDTO;
 
     const emailExists = await this.usersRepository.findUnique({
