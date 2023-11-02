@@ -10,7 +10,7 @@ export const ActiveUserId = createParamDecorator<undefined>(
     const userId = request.userId;
 
     if (!userId) {
-      throw new UnauthorizedException('User id does not exists');
+      throw new UnauthorizedException();
     }
 
     return userId;
