@@ -6,7 +6,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  async me(@Req() request: any) {
-    return request.userId;
+  async me(@Req() request: any): Promise<{ name: string; email: string }> {
+    return this.usersService.getUserById(request.userId);
   }
 }
