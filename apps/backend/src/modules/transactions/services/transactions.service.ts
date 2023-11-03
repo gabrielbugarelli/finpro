@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { CreateTransactionDto } from '../dto/create-transaction.dto';
+import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 import { TransactionsReporitory } from 'src/shared/database/repositories/transactions.repositories';
-import { ValidateBankAccountsOwnershipService } from '../bank-accounts/services/validate-bank-accounts-ownerhip.service';
-import { ValidateCategoryOwnershipService } from '../categories/services/validate-category-ownerhip.service';
-import { error } from 'console';
+import { ValidateBankAccountsOwnershipService } from '../../bank-accounts/services/validate-bank-accounts-ownerhip.service';
+import { ValidateCategoryOwnershipService } from '../../categories/services/validate-category-ownerhip.service';
+import { ValidateTransactionOwnershipService } from './validate-transaction-ownership.service';
 
 @Injectable()
 export class TransactionsService {
@@ -12,6 +12,7 @@ export class TransactionsService {
     private readonly transactionsRepository: TransactionsReporitory,
     private readonly validateBankAccountsOwnershipService: ValidateBankAccountsOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
+    private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
   ) {}
 
   async create(userId: string, createTransactionDto: CreateTransactionDto) {
@@ -35,8 +36,22 @@ export class TransactionsService {
     });
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(
+    userId: string,
+    transactionId: string,
+    updateTransactionDto: UpdateTransactionDto,
+  ) {
+    await this.validateEntitiesOnweship({
+      userId,
+      transactionId,
+      categoryId: updateTransactionDto.categoryId,
+      bankAccountId: updateTransactionDto.bankAccountId,
+    });
+
+    return await this.transactionsRepository.update({
+      where: { id: transactionId },
+      data: { ...updateTransactionDto },
+    });
   }
 
   remove(id: number) {
@@ -47,14 +62,17 @@ export class TransactionsService {
     userId,
     categoryId,
     bankAccountId,
+    transactionId,
   }: {
     userId: string;
     categoryId: string;
     bankAccountId: string;
+    transactionId?: string;
   }) {
     await Promise.all([
       this.validateBankAccountsOwnershipService.validate(userId, bankAccountId),
       this.validateCategoryOwnershipService.validate(userId, categoryId),
+      this.validateTransactionOwnershipService.validate(userId, transactionId),
     ]);
   }
 }
