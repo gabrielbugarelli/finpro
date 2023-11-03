@@ -7,6 +7,8 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { TransactionsService } from './services/transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -18,11 +20,11 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post()
-  create(
+  async create(
     @ActiveUserId() userId: string,
     @Body() createTransactionDto: CreateTransactionDto,
   ) {
-    return this.transactionsService.create(userId, createTransactionDto);
+    return await this.transactionsService.create(userId, createTransactionDto);
   }
 
   @Get()
@@ -31,20 +33,24 @@ export class TransactionsController {
   }
 
   @Put(':transactionId')
-  update(
+  async update(
     @ActiveUserId() userId: string,
     @Param('transactionId', ParseUUIDPipe) transactionId: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.transactionsService.update(
+    return await this.transactionsService.update(
       userId,
       transactionId,
       updateTransactionDto,
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
+  @Delete(':transactionId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(
+    @ActiveUserId() userId: string,
+    @Param('transactionId', ParseUUIDPipe) transactionId: string,
+  ) {
+    await this.transactionsService.remove(userId, transactionId);
   }
 }
