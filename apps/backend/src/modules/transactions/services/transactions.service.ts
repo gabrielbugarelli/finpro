@@ -30,9 +30,19 @@ export class TransactionsService {
     });
   }
 
-  async findAllByUserId(userId: string) {
+  async findAllByUserId(
+    userId: string,
+    filter: { month: number; year: number; bankAccountId?: string },
+  ) {
     return await this.transactionsRepository.findMany({
-      where: { userId },
+      where: {
+        userId,
+        bankAccountId: filter.bankAccountId,
+        date: {
+          gte: new Date(Date.UTC(filter.year, filter.month)),
+          lt: new Date(Date.UTC(filter.year, filter.month + 1)),
+        },
+      },
     });
   }
 
