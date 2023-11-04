@@ -10,7 +10,9 @@ export class BankAccountsRepository {
     return await this.prismaService.bankAccount.create(createBankAccountDTO);
   }
 
-  async findMany(findManyDTO: Prisma.BankAccountFindManyArgs) {
+  async findMany<T extends Prisma.BankAccountFindManyArgs>(
+    findManyDTO: Prisma.SelectSubset<T, Prisma.BankAccountFindManyArgs>,
+  ) {
     return await this.prismaService.bankAccount.findMany(findManyDTO);
   }
 
