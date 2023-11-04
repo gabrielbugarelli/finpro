@@ -5,6 +5,7 @@ import { TransactionsReporitory } from 'src/shared/database/repositories/transac
 import { ValidateBankAccountsOwnershipService } from '../../bank-accounts/services/validate-bank-accounts-ownerhip.service';
 import { ValidateCategoryOwnershipService } from '../../categories/services/validate-category-ownerhip.service';
 import { ValidateTransactionOwnershipService } from './validate-transaction-ownership.service';
+import { TransactionTypeEnum } from '../entities/TransactionTypeEnum';
 
 @Injectable()
 export class TransactionsService {
@@ -32,15 +33,21 @@ export class TransactionsService {
 
   async findAllByUserId(
     userId: string,
-    filter: { month: number; year: number; bankAccountId?: string },
+    filters: {
+      month: number;
+      year: number;
+      bankAccountId?: string;
+      type?: TransactionTypeEnum;
+    },
   ) {
     return await this.transactionsRepository.findMany({
       where: {
         userId,
-        bankAccountId: filter.bankAccountId,
+        bankAccountId: filters.bankAccountId,
+        type: filters.type,
         date: {
-          gte: new Date(Date.UTC(filter.year, filter.month)),
-          lt: new Date(Date.UTC(filter.year, filter.month + 1)),
+          gte: new Date(Date.UTC(filters.year, filters.month)),
+          lt: new Date(Date.UTC(filters.year, filters.month + 1)),
         },
       },
     });
