@@ -3,9 +3,16 @@ import dashboardIllustration from '../assets/dashboard_illustration.png'
 
 export const AuthLayout = () => {
   return (
-    <section className="flex flex-row-reverse h-full">
+    <section className="flex h-full">
+      <section className="h-full w-full flex items-center justify-center flex-col gap-16 lg:w-1/2">
+        <label className="font-bold text-teal-900 text-2xl">Finpro</label>
 
-      <section className="flex relative justify-center items-center h-full w-1/2  p-8">
+        <section className="w-full max-w-[504px] px-8">
+          <Outlet />
+        </section>
+      </section>
+
+      <section className="relative justify-center items-center h-full w-1/2  p-8 hidden lg:flex">
         <img
           src={dashboardIllustration} alt="Illustration of dashboard"
           className="object-cover h-full w-full max-w-[656px] max-h-[960px] rounded-[32px] select-none"
@@ -17,10 +24,6 @@ export const AuthLayout = () => {
             Gerencie suas finanças pessoais de uma forma simples com o Finpro!
           </p>
         </section>
-      </section>
-
-      <section className="h-full w-1/2">
-        <Outlet />
       </section>
     </section>
   )
