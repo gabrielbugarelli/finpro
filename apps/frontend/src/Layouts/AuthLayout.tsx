@@ -18,7 +18,7 @@ export const AuthLayout = () => {
           className="object-cover h-full w-full max-w-[656px] max-h-[960px] rounded-[32px] select-none"
         />
 
-        <section className="absolute bottom-8 w-[656px] p-10 bg-white rounded-b-[32px]">
+        <section className="absolute bottom-8 max-w-[656px] mx-4 p-10 bg-white rounded-b-[32px]">
           <label className="font-bold text-teal-900 text-2xl">Finpro</label>
           <p className="text-gray-700 font-medium text-xl mt-4">
             Gerencie suas finanças pessoais de uma forma simples com o Finpro!
