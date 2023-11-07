@@ -1,6 +1,6 @@
 import { httpClient } from "./HttpClient";
 
-type SignupParams = {
+export type SignupParams = {
   name: string
   email: string
   password: string

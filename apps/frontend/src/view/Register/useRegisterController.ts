@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form"
 import { z } from "zod";
-import { authService } from "../../services/authService";
+import { SignupParams, authService } from "../../services/authService";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   name: z.string().min(3, "Nome é obrigatório"),
@@ -14,13 +16,21 @@ type FormRegisterType = z.infer<typeof schema>
 export const useRegisterController = () => {
   const { register, handleSubmit: handleFormSubmit, formState: {errors} } = useForm<FormRegisterType>({resolver: zodResolver(schema)});
 
-  const handleSubmit = handleFormSubmit(async(data) => {
-    const response = await authService.signup(data)
-
-    if(response.accessToken) {
-      console.log(response.accessToken)
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ['signup'],
+    mutationFn: async (data: SignupParams) => {
+      return await authService.signup(data)
     }
   })
 
-  return {handleSubmit, register, errors}
+  const handleSubmit = handleFormSubmit(async(data) => {
+    try {
+      await mutateAsync(data);
+      toast.success("Conta criada com sucesso 😃")
+    } catch (error) {
+      toast.error("Ocorreu um erro ao criar a conta 😔")
+    }
+  })
+
+  return {handleSubmit, register, errors, isPending}
 }
