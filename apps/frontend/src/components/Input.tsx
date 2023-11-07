@@ -1,16 +1,17 @@
-import type { ComponentProps } from "react"
+import { ComponentProps, forwardRef } from "react"
 
 type InputProps = {
   name: string
 } & ComponentProps<'input'>
 
-export const Input: React.FC<InputProps> = ({ id, name, placeholder, ...props }) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ id, name, placeholder, ...props }, ref) => {
   const inputId = id ?? name;
 
   return (
     <section className="relative">
       <input
         {...props}
+        ref={ref}
         id={inputId}
         name={name}
         placeholder=" "
@@ -19,11 +20,10 @@ export const Input: React.FC<InputProps> = ({ id, name, placeholder, ...props })
 
       <label
         htmlFor={inputId}
-        // className="absolute left-[13px] top-3.5 pointer-events-none text-gray-700"
         className="absolute text-xs left-[13px] top-2 pointer-events-none text-gray-700 peer-placeholder-shown:text-base peer-placeholder-shown:top-3.5 transition-all"
       >
         {placeholder}
       </label>
     </section>
   )
-}
+})
