@@ -26,9 +26,9 @@ export const useRegisterController = () => {
   const handleSubmit = handleFormSubmit(async(data) => {
     try {
       await mutateAsync(data);
-      toast.success("Conta criada com sucesso 😃")
+      toast.success("Conta criada com sucesso! 😃")
     } catch (error) {
-      toast.error("Ocorreu um erro ao criar a conta 😔")
+      toast.error("Ocorreu um erro ao criar a conta! 😔")
     }
   })
 
